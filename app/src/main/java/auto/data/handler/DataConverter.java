@@ -10,11 +10,9 @@ import auto.data.model.ScrapedDataHolder;
 import auto.data.model.VehicleRawData;
 
 public class DataConverter {
-	private List<ScrapedDataHolder> dataHolderList;
-
 	public static VehicleRawData convertdataHolderListToVehicle(List<ScrapedDataHolder> dataHolderList)  {
 		VehicleRawData vehicle = new VehicleRawData();
-		for (Iterator iterator = dataHolderList.iterator(); iterator.hasNext();) {
+		for (Iterator<ScrapedDataHolder> iterator = dataHolderList.iterator(); iterator.hasNext();) {
 			ScrapedDataHolder informationText = (ScrapedDataHolder) iterator.next();
 			transformFieldValue(vehicle,informationText.getName(), informationText.getValue());
 		}
@@ -40,7 +38,7 @@ public class DataConverter {
 				}
 			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException
 					| NoSuchFieldException | IllegalArgumentException e) {
-				System.err.println("Encountered following error during data processing : " + e.getClass()+ e.getMessage());
+				System.err.println("Encountered following error during data processing : " + fieldName+ ":" + value + ":" + e.getClass()+ ":" + e.getMessage());
 			}
 			
 			

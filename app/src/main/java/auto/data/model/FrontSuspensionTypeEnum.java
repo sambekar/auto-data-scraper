@@ -1,8 +1,6 @@
 package auto.data.model;
 
-import lombok.Data;
 
-@Data
 public enum FrontSuspensionTypeEnum {
 	MacPhersonStrut("Common in front-wheel-drive cars, simple and compact."),
 	DoubleWishbone("Provides better handling and stability, used in high-performance cars."),

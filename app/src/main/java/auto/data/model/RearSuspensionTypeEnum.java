@@ -1,8 +1,6 @@
 package auto.data.model;
 
-import lombok.Data;
 
-@Data
 public enum RearSuspensionTypeEnum {
 	TwistBeam("Common in budget hatchbacks, lightweight and cost-effective."),
 	MultiLinkRear("Found in premium sedans and SUVs for improved handling and comfort."),

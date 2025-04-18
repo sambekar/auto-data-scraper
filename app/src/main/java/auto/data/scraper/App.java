@@ -23,177 +23,148 @@ import auto.data.model.VehicleRawData;
 import auto.data.util.EncryptorHelper;
 
 public class App {
-	//private final static String xpathOfViewAllVariantsCollapsingSpan = "/html/body/div[2]/div[1]/div[1]/div/main/div/div[1]/section[1]/div/div/span";
-	
-	private final static String xpathOfViewAllVariantsCollapsingSpan = "/html/body/div[2]/div[1]/div[1]/div/main/div[5]/div[1]/section[3]/div/div/span";
-
     public static void main(String[] args) {
-    	ArrayList<String> listOfVariantsUrl = new ArrayList<String>();
-    	ArrayList<VehicleRawData> listVehicleRawData = new ArrayList<VehicleRawData>();
-    	
-    	String homeUrl = EncryptorHelper.INSTANCE.getProperty("homeurl");
-    	String makeUrl = EncryptorHelper.INSTANCE.getProperty("makeUrl");
-    	WebDriver driver = new EdgeDriver();
-    	driver.get(homeUrl+makeUrl);
-    	//driver.manage().window().fullscreen();
-    	WebDriverWait wait = new WebDriverWait(driver,Duration.ofMinutes(1));
-    	wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathOfViewAllVariantsCollapsingSpan)));
-    	WebElement viewAllVariants = driver.findElement(By.xpath(xpathOfViewAllVariantsCollapsingSpan));
-    	//viewAllVariants.click();
-    	//List<WebElement> allElements = driver.findElements(By.xpath("//*")); // Selects all elements
+        ArrayList<String> listOfVariantsUrl = new ArrayList<String>();
+        ArrayList<VehicleRawData> listVehicleRawData = new ArrayList<VehicleRawData>();
+        String homeUrl = EncryptorHelper.INSTANCE.getProperty("homeurl");
+        String makeUrl = EncryptorHelper.INSTANCE.getProperty("makeUrl");
+        String xpathOfViewAllVariantsCollapsingSpan = EncryptorHelper.INSTANCE.getProperty("viewAllVariants");
+        String tableofallvariants = EncryptorHelper.INSTANCE.getProperty("tableofallvariants");
+        WebDriver driver = new EdgeDriver();
+        driver.get(homeUrl + makeUrl);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMinutes(1));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathOfViewAllVariantsCollapsingSpan)));
+        WebElement numberofvariantstable = driver.findElement(By.xpath(tableofallvariants));
+        List<WebElement> numberofvariants = numberofvariantstable.findElements(By.xpath(".//tbody/tr"));
+        System.out.println("Number of Variants for " + makeUrl + " is = " + numberofvariants.size());
+        String linkofEachVariant = EncryptorHelper.INSTANCE.getProperty("linkofEachVariant");
+        for (int i = 1; i <= 1; i++) {
+            WebElement variantName = driver.findElement(By.xpath(linkofEachVariant.replaceAll("\\$\\{(.*?)}", String.valueOf(i))));
+            listOfVariantsUrl.add(homeUrl + variantName.getDomAttribute("href"));
+        }
+        VehicleRawData vehicle;
+        for (Iterator<String> iterator = listOfVariantsUrl.iterator(); iterator.hasNext();) {
+            ArrayList<ScrapedDataHolder> information = new ArrayList<ScrapedDataHolder>();
+            String url = (String) iterator.next();
+            System.out.println(url);
+            driver.get(url);
+            WebDriverWait wait1 = new WebDriverWait(driver, Duration.ofMinutes(1));
+            wait1.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/div[1]/div[1]/div/main/div/div[1]/div[3]/section/div[1]/div[2]/ul/li[2]/a")));
+            WebElement priceSpanTable = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[1]/div/main/div/div[1]/section[3]/table"));
+            List<WebElement> numberOfRowsinPriceSpan = priceSpanTable.findElements(By.xpath(".//tbody/tr"));
+            WebElement variantName = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[1]/div/section/div/div/div[2]/h1"));
+            information.add(new ScrapedDataHolder("variantName", variantName.getText()));
+            for (WebElement row : numberOfRowsinPriceSpan) {
+                List<WebElement> cells = row.findElements(By.tagName("td"));
+                information.add(new ScrapedDataHolder(transformName("Price" + cells.get(0).getText()), cells.get(1).getText()));
+            }
 
-        //for (WebElement element : allElements) {
-            //String xpath = getFullXPath(element, driver);
-            //System.out.println(xpath);
-        //}
-    	//WebElement numberofvariantstable = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[1]/div/main/div/div[1]/section[1]/div/table/tbody"));
-    	WebElement numberofvariantstable = driver.findElement(By.xpath("html/body/div[2]/div[1]/div[1]/div/main/div[5]/div[1]/section[3]/div/table"));
-    	///html/body/div[2]/div[1]/div[1]/div/main/div[5]/div[1]/section[3]/div/table/tbody/tr[1]/td[1]/a
-    	
-    	//List<WebElement> numberofvariants = numberofvariantstable.findElements(By.tagName("tr"));
-    	List<WebElement> numberofvariants = numberofvariantstable.findElements(By.xpath(".//tbody/tr"));
-    	System.out.println("Number of Variants for "+makeUrl+" is = "+ numberofvariants.size());
-    	for(int i = 1 ; i <= 1 ; i++) {
-    		WebElement variantName = driver.findElement(By.xpath("html/body/div[2]/div[1]/div[1]/div/main/div[5]/div[1]/section[3]/div/table/tbody/tr["+i+"]/td[1]/a"));
-    		listOfVariantsUrl.add(homeUrl+variantName.getDomAttribute("href"));
-    	}
-    	VehicleRawData vehicle;
-    	for (Iterator iterator = listOfVariantsUrl.iterator(); iterator.hasNext();) {
-    		ArrayList<ScrapedDataHolder> information = new ArrayList<ScrapedDataHolder>();
-			String url = (String) iterator.next();
-			driver.get(url);
-			WebDriverWait wait1 = new WebDriverWait(driver,Duration.ofMinutes(1));
-			wait1.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/div[1]/div[1]/div/main/div/div[1]/div[3]/section/div[1]/div[2]/ul/li[2]/a")));
-			WebElement priceSpanTable = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[1]/div/main/div/div[1]/section[3]/table"));
-			List<WebElement> numberOfRowsinPriceSpan = priceSpanTable.findElements(By.xpath(".//tbody/tr"));
-			
-			WebElement variantName = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[1]/div/section/div/div/div[2]/h1"));
-			information.add(new ScrapedDataHolder("variantName", variantName.getText()));
-			for (WebElement row : numberOfRowsinPriceSpan) {
-				List<WebElement> cells = row.findElements(By.tagName("td"));
-				information.add(new ScrapedDataHolder(transformName("Price"+cells.get(0).getText()),cells.get(1).getText()));			
-			}
-			
-			WebElement informationSpan = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[1]/div/main/div/div[1]/div[3]/section/div[1]/div[1]"));
-			List<WebElement> numberOfInfoTables = informationSpan.findElements(By.xpath(".//table"));
-			for (WebElement table : numberOfInfoTables) {
-				String sectionName = table.getDomAttribute("data-track-section");				
-				
-				List<WebElement> rows = table.findElements(By.tagName("tr"));
-				for (WebElement row : rows) {
-					List<WebElement> cells = row.findElements(By.tagName("td"));
-					if(cells.size()>1) {
-					String cellName = getCellName(cells.get(0));
-					String cellValue = getCellValue(cells.get(1));
-					information.add(new ScrapedDataHolder(transformName(sectionName+cellName),cellValue));}
-	            }
-				
-			}
-			vehicle = DataConverter.convertdataHolderListToVehicle(information);
-				//System.out.println(vehicle.toString());
-				listVehicleRawData.add(vehicle);
-			
-		}
-    	for (Iterator iterator = listVehicleRawData.iterator(); iterator.hasNext();) {
-    		VehicleRawData vehicleRawData = (VehicleRawData) iterator.next();
-    		System.out.println(vehicleRawData);
-    	}
-    	driver.quit();
-    	
+            WebElement informationSpan = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[1]/div/main/div/div[1]/div[3]/section/div[1]/div[1]"));
+            List<WebElement> numberOfInfoTables = informationSpan.findElements(By.xpath(".//table"));
+            for (WebElement table : numberOfInfoTables) {
+                String sectionName = table.getDomAttribute("data-track-section");
+                List<WebElement> rows = table.findElements(By.tagName("tr"));
+                for (WebElement row : rows) {
+                    List<WebElement> cells = row.findElements(By.tagName("td"));
+                    if (cells.size() > 1) {
+                        String cellName = getCellName(cells.get(0));
+                        String cellValue = getCellValue(cells.get(1));
+                        information.add(new ScrapedDataHolder(transformName(sectionName + cellName), cellValue));
+                    }
+                }
+
+            }
+            vehicle = DataConverter.convertdataHolderListToVehicle(information); 
+            listVehicleRawData.add(vehicle);
+
+        }
+        for (Iterator<VehicleRawData> iterator = listVehicleRawData.iterator(); iterator.hasNext();) {
+            VehicleRawData vehicleRawData = (VehicleRawData) iterator.next();
+            System.out.println(vehicleRawData);
+        }
+        driver.close();
+        driver.quit();
+
     }
 
     private static String transformName(String input) {
-		final Map<Character, String> numberWords = Map.of(
-		        '0', "Zero", '1', "One", '2', "Two", '3', "Three", '4', "Four", 
-		        '5', "Five", '6', "Six", '7', "Seven", '8', "Eight", '9', "Nine"
-		    );
-		if (input == null || input.isEmpty()) {
-        return "";
-    }
-
-    // Remove spaces and hyphens
-    input = input.replaceAll("[ -./]", "");
-    
-    // Replace '&' with 'And'
-    input = input.replace("&", "And");
-    
-    // Convert numbers to words
-    StringBuilder result = new StringBuilder();
-    for (char ch : input.toCharArray()) {
-        if (Character.isDigit(ch)) {
-            result.append(numberWords.get(ch));
-        } else {
-            result.append(ch);
+        final Map<Character, String> numberWords = Map.of('0', "Zero", '1', "One", '2', "Two", '3', "Three", '4', "Four", '5', "Five", '6', "Six", '7', "Seven", '8', "Eight", '9', "Nine");
+        if (input == null || input.isEmpty()) {
+            return "";
         }
-    }
-    
-    // Step 4: Convert to camel case
+
+        // Remove spaces and hyphens
+        input = input.replaceAll("[ -./]", "");
+
+        // Replace '&' with 'And'
+        input = input.replace("&", "And");
+
+        // Convert numbers to words
+        StringBuilder result = new StringBuilder();
+        for (char ch : input.toCharArray()) {
+            if (Character.isDigit(ch)) {
+                result.append(numberWords.get(ch));
+            } else {
+                result.append(ch);
+            }
+        }
+
+        // Step 4: Convert to camel case
         String[] words = input.split("(?=[A-Z])|(?<=[a-z])(?=[A-Z])");
-        StringBuilder camelCase = new StringBuilder(words[0].toLowerCase());        
+        StringBuilder camelCase = new StringBuilder(words[0].toLowerCase());
         for (int i = 1; i < words.length; i++) {
-            camelCase.append(words[i].substring(0, 1).toUpperCase())
-                     .append(words[i].substring(1).toLowerCase());
+            camelCase.append(words[i].substring(0, 1).toUpperCase()).append(words[i].substring(1).toLowerCase());
         }
-    
-    return camelCase.toString();}
 
-	private static String getCellName(WebElement cell) {
-		String valueToReturn = null;
-		if(isElementPresent(cell, "span")) {
-			valueToReturn = cell.findElement(By.tagName("span")).getText();
-		}else  {
-			valueToReturn = cell.getText();
-		}
-		return valueToReturn;
-	}
+        return camelCase.toString();
+    }
 
-	private static String getCellValue(WebElement cell) {
-		String valueToReturn = null;
-		if(isElementPresent(cell, "span")) {
-			valueToReturn = cell.findElement(By.tagName("span")).getText();
-			if(valueToReturn.equalsIgnoreCase("")) {
-				String valueToCheck = cell.findElement(By.tagName("span")).findElement(By.tagName("i")).getDomAttribute("class");
-				if(valueToCheck.equalsIgnoreCase("icon-deletearrow")) {
-					valueToReturn = "N";
-				}else if(valueToCheck.equalsIgnoreCase("icon-check")) {
-					valueToReturn = "Y";
-				}
-			}
-		}else if (isElementPresent(cell, "i")) {
-			String valueToCheck = cell.findElement(By.tagName("i")).getDomAttribute("class");
-			if(valueToCheck.equalsIgnoreCase("icon-deletearrow")) {
-				valueToReturn = "N";
-			}else if(valueToCheck.equalsIgnoreCase("icon-check")) {
-				valueToReturn = "Y";
-			}
-		}		
-		return valueToReturn;
-	}
+    private static String getCellName(WebElement cell) {
+        String valueToReturn = null;
+        if (isElementPresent(cell, "span")) {
+            valueToReturn = cell.findElement(By.tagName("span")).getText();
+        } else {
+            valueToReturn = cell.getText();
+        }
+        return valueToReturn;
+    }
 
-	private static boolean isElementPresent(WebElement cell, String string) {
-		try {
-			cell.findElement(By.tagName(string));
-			return true;
-		}catch (NoSuchElementException e) {
-			return false;
-		}
-		
-	}
-	public static String getFullXPath(WebElement element, WebDriver driver) {
-        String jsScript =
-                "function getXPath(node) {" +
-                "  if (node.id !== '') return 'id(\"' + node.id + '\")';" +
-                "  if (node === document.body) return '/html/' + node.tagName.toLowerCase();" +
-                "  var index = 1;" +
-                "  var siblings = node.parentNode.childNodes;" +
-                "  for (var i = 0; i < siblings.length; i++) {" +
-                "    var sibling = siblings[i];" +
-                "    if (sibling === node) return getXPath(node.parentNode) + '/' + node.tagName.toLowerCase() + '[' + index + ']';" +
-                "    if (sibling.nodeType === 1 && sibling.tagName === node.tagName) index++;" +
-                "  }" +
-                "  return '';" +
-                "}" +
-                "return getXPath(arguments[0]);";
+    private static String getCellValue(WebElement cell) {
+        String valueToReturn = null;
+        if (isElementPresent(cell, "span")) {
+            valueToReturn = cell.findElement(By.tagName("span")).getText();
+            if (valueToReturn.equalsIgnoreCase("")) {
+                String valueToCheck = cell.findElement(By.tagName("span")).findElement(By.tagName("i")).getDomAttribute("class");
+                if (valueToCheck.equalsIgnoreCase("icon-deletearrow")) {
+                    valueToReturn = "N";
+                } else if (valueToCheck.equalsIgnoreCase("icon-check")) {
+                    valueToReturn = "Y";
+                }
+            }
+        } else if (isElementPresent(cell, "i")) {
+            String valueToCheck = cell.findElement(By.tagName("i")).getDomAttribute("class");
+            if (valueToCheck.equalsIgnoreCase("icon-deletearrow")) {
+                valueToReturn = "N";
+            } else if (valueToCheck.equalsIgnoreCase("icon-check")) {
+                valueToReturn = "Y";
+            }
+        }
+        return valueToReturn;
+    }
+
+    private static boolean isElementPresent(WebElement cell, String string) {
+        try {
+            cell.findElement(By.tagName(string));
+            return true;
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+
+    }
+
+    public static String getFullXPath(WebElement element, WebDriver driver) {
+        String jsScript = "function getXPath(node) {" + "  if (node.id !== '') return 'id(\"' + node.id + '\")';" + "  if (node === document.body) return '/html/' + node.tagName.toLowerCase();" + "  var index = 1;" + "  var siblings = node.parentNode.childNodes;" + "  for (var i = 0; i < siblings.length; i++) {" + "    var sibling = siblings[i];"
+                + "    if (sibling === node) return getXPath(node.parentNode) + '/' + node.tagName.toLowerCase() + '[' + index + ']';" + "    if (sibling.nodeType === 1 && sibling.tagName === node.tagName) index++;" + "  }" + "  return '';" + "}" + "return getXPath(arguments[0]);";
 
         return (String) ((org.openqa.selenium.JavascriptExecutor) driver).executeScript(jsScript, element);
     }

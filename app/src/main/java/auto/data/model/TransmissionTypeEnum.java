@@ -1,8 +1,6 @@
 package auto.data.model;
 
-import lombok.Data;
 
-@Data
 public enum TransmissionTypeEnum {
 	MANUAL("Manual Transmission"),
 	IMT("Intelligent manual transmission"),

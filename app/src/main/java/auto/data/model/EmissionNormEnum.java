@@ -1,8 +1,6 @@
 package auto.data.model;
 
-import lombok.Data;
 
-@Data
 public enum EmissionNormEnum {
 	BS1("2000-2005"),
 	BS2("2005-2010"),

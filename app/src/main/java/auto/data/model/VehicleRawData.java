@@ -40,6 +40,8 @@ public class VehicleRawData {
 	private String fuelPerformancePetrolFuelTankCapacity;
 	private String fuelPerformanceDieselFuelTankCapacity;
 	private String fuelPerformanceEmissionNormCompliance;
+	private String fuelPerformanceSecondaryFuelType;
+	private String fuelPerformanceTopSpeed;
 
 	private String suspensionSteeringBrakesFrontSuspension;
 	private String suspensionSteeringBrakesRearSuspension;
@@ -50,6 +52,8 @@ public class VehicleRawData {
 	private String suspensionSteeringBrakesRearBrakeType;
 	private String suspensionSteeringBrakesAlloyWheelSizeFront;
 	private String suspensionSteeringBrakesAlloyWheelSizeRear;
+	private String suspensionSteeringBrakesSteeringGearType;
+
 
 	private int dimensionsCapacityLength;
 	private int dimensionsCapacityWidth;
@@ -60,6 +64,9 @@ public class VehicleRawData {
 	private int dimensionsCapacityFrontTread;
 	private int dimensionsCapacityNoofDoors;
 	private int dimensionsCapacityReportedBootSpace;
+	private int dimensionsCapacityBootSpace;
+	private int dimensionsCapacityKerbWeight;
+	private int dimensionsCapacityGrossWeight;
 
 	private Boolean comfortConveniencePowerSteering;
 	private Boolean comfortConvenienceAirConditioner;
@@ -103,6 +110,8 @@ public class VehicleRawData {
 	private String comfortConvenienceGearShiftIndicator;
 	private String comfortConvenienceLuggageHookNet;
 	private String comfortConvenienceRearCurtain;
+	private Boolean comfortConvenienceRealTimeVehicleTracking;
+	private Boolean comfortConvenienceGloveBoxlight;
 
 	private Boolean interiorTachometer;
 	private Boolean interiorGloveBox;
@@ -138,6 +147,8 @@ public class VehicleRawData {
 	private String exteriorFogLightsRear;
 	private String exteriorOutsideRearViewMirrorORVM;
 	private String exteriorPowerAntenna;
+	private Boolean exteriorAdjustableHeadlamps;
+	private Boolean exteriorHalogenHeadlamps;
 
 	private Boolean safetyAntilockBrakingSystemABS;
 	private Boolean safetyCentralLocking;
@@ -170,6 +181,9 @@ public class VehicleRawData {
 	private String safetyGlobalNCAPSafetyRating;
 	private String safetyGlobalNCAPChildSafetyRating;
 	private String safetyAntiPinchPowerWindows;
+	private Boolean safetyBrakeAssist;
+	private Boolean safetyHeadsUpDisplayHUD;
+	private Boolean safetyHillDescentControl;
 
 	private Boolean entertainmentCommunicationRadio;
 	private Boolean entertainmentCommunicationIntegrated2DINAudio;
@@ -207,6 +221,16 @@ public class VehicleRawData {
 	private Boolean advanceInternetFeatureSOSButton;
 	private Boolean advanceInternetFeatureRSA;
 	private String advanceInternetFeatureInbuiltAPPs;
+	private Boolean advanceInternetFeatureRemoteImmobiliser;
+	private Boolean advanceInternetFeatureSendPOItoVehicleFromApp;
+	private Boolean advanceInternetFeatureOverSpeedingAlert;
+	private Boolean advanceInternetFeatureTowAwayAlert;
+	private Boolean advanceInternetFeatureSmartwatchApp;
+	private Boolean advanceInternetFeatureValetMode;
+	private Boolean advanceInternetFeatureRemoteACOnOff;
+	private Boolean advanceInternetFeatureRemoteDoorLockUnlock;
+	private Boolean advanceInternetFeatureSOSEmergencyAssistance;
+	private Boolean advanceInternetFeatureGeofenceAlert;
 
 	public void transformpriceExShowroomPrice(String priceExShowroomPrice) {
 		this.priceExShowroomPrice = UtilTransformers.convertToBigDecimal(priceExShowroomPrice);
@@ -353,6 +377,39 @@ public class VehicleRawData {
 			this.dimensionsCapacityReportedBootSpace = Integer.parseInt(matcher.group(1));
 		} else {
 			this.dimensionsCapacityReportedBootSpace = 0;
+		}
+	}
+	
+	public void transformdimensionsCapacityBootSpace(String dimensionsCapacityBootSpace) {
+		Pattern pattern = Pattern.compile("(\\d+)");
+		Matcher matcher = pattern.matcher(dimensionsCapacityBootSpace);
+
+		if (matcher.matches()) {
+			this.dimensionsCapacityBootSpace = Integer.parseInt(matcher.group(1));
+		} else {
+			this.dimensionsCapacityBootSpace = 0;
+		}
+	}
+	
+	public void transformdimensionsCapacityKerbWeight(String dimensionsCapacityKerbWeight) {
+		Pattern pattern = Pattern.compile("\\d+-(\\d+)");
+		Matcher matcher = pattern.matcher(dimensionsCapacityKerbWeight);
+
+		if (matcher.matches()) {
+			this.dimensionsCapacityKerbWeight = Integer.parseInt(matcher.group(1));
+		} else {
+			this.dimensionsCapacityKerbWeight = 0;
+		}
+	}
+	
+	public void transformdimensionsCapacityGrossWeight(String dimensionsCapacityGrossWeight) {
+		Pattern pattern = Pattern.compile("^(\\d+)");
+		Matcher matcher = pattern.matcher(dimensionsCapacityGrossWeight);
+
+		if (matcher.matches()) {
+			this.dimensionsCapacityGrossWeight = Integer.parseInt(matcher.group(1));
+		} else {
+			this.dimensionsCapacityGrossWeight = 0;
 		}
 	}
 	
@@ -507,6 +564,16 @@ public class VehicleRawData {
 		this.comfortConvenienceVoiceassistedsunroof = BooleanUtils
 				.toBooleanObject(comfortConvenienceVoiceassistedsunroof);
 	}
+	
+	public void transformcomfortConvenienceRealTimeVehicleTracking(String comfortConvenienceRealTimeVehicleTracking) {
+		this.comfortConvenienceRealTimeVehicleTracking = BooleanUtils
+				.toBooleanObject(comfortConvenienceRealTimeVehicleTracking);
+	}
+	
+	public void transformcomfortConvenienceGloveBoxlight(String comfortConvenienceGloveBoxlight) {
+		this.comfortConvenienceGloveBoxlight = BooleanUtils
+				.toBooleanObject(comfortConvenienceGloveBoxlight);
+	}
 
 	public void transforminteriorTachometer(String interiorTachometer) {
 		this.interiorTachometer = BooleanUtils.toBooleanObject(interiorTachometer);
@@ -584,6 +651,14 @@ public class VehicleRawData {
 
 	public void transformexteriorLEDTaillights(String exteriorLEDTaillights) {
 		this.exteriorLEDTaillights = BooleanUtils.toBooleanObject(exteriorLEDTaillights);
+	}
+	
+	public void transformexteriorAdjustableHeadlamps(String exteriorAdjustableHeadlamps) {
+		this.exteriorAdjustableHeadlamps = BooleanUtils.toBooleanObject(exteriorAdjustableHeadlamps);
+	}
+	
+	public void transformexteriorHalogenHeadlamps(String exteriorHalogenHeadlamps) {
+		this.exteriorHalogenHeadlamps = BooleanUtils.toBooleanObject(exteriorHalogenHeadlamps);
 	}
 
 	public void transformsafetyAntilockBrakingSystemABS(String safetyAntilockBrakingSystemABS) {
@@ -690,6 +765,18 @@ public class VehicleRawData {
 
 	public void transformsafety360ViewCamera(String safety360ViewCamera) {
 		this.safety360ViewCamera = BooleanUtils.toBooleanObject(safety360ViewCamera);
+	}
+	
+	public void transformsafetyBrakeAssist(String safetyBrakeAssist) {
+		this.safetyBrakeAssist = BooleanUtils.toBooleanObject(safetyBrakeAssist);
+	}
+	
+	public void transformsafetyHeadsUpDisplayHUD(String safetyHeadsUpDisplayHUD) {
+		this.safetyHeadsUpDisplayHUD = BooleanUtils.toBooleanObject(safetyHeadsUpDisplayHUD);
+	}
+	
+	public void transformsafetyHillDescentControl(String safetyHillDescentControl) {
+		this.safetyHillDescentControl = BooleanUtils.toBooleanObject(safetyHillDescentControl);
 	}
 
 	public void transformentertainmentCommunicationRadio(String entertainmentCommunicationRadio) {
@@ -823,4 +910,52 @@ public class VehicleRawData {
 	public void transformadvanceInternetFeatureRSA(String advanceInternetFeatureRSA) {
 		this.advanceInternetFeatureRSA = BooleanUtils.toBooleanObject(advanceInternetFeatureRSA);
 	}
+
+	public void transformadvanceInternetFeatureRemoteImmobiliser(String advanceInternetFeatureRemoteImmobiliser) {
+		this.advanceInternetFeatureRemoteImmobiliser = BooleanUtils
+				.toBooleanObject(advanceInternetFeatureRemoteImmobiliser);
+	}
+
+	public void transformadvanceInternetFeatureSendPOItoVehicleFromApp(
+			String advanceInternetFeatureSendPOItoVehicleFromApp) {
+		this.advanceInternetFeatureSendPOItoVehicleFromApp = BooleanUtils
+				.toBooleanObject(advanceInternetFeatureSendPOItoVehicleFromApp);
+	}
+
+	public void transformadvanceInternetFeatureOverSpeedingAlert(String advanceInternetFeatureOverSpeedingAlert) {
+		this.advanceInternetFeatureOverSpeedingAlert = BooleanUtils
+				.toBooleanObject(advanceInternetFeatureOverSpeedingAlert);
+	}
+
+	public void transformadvanceInternetFeatureTowAwayAlert(String advanceInternetFeatureTowAwayAlert) {
+		this.advanceInternetFeatureTowAwayAlert = BooleanUtils.toBooleanObject(advanceInternetFeatureTowAwayAlert);
+	}
+
+	public void transformadvanceInternetFeatureSmartwatchApp(String advanceInternetFeatureSmartwatchApp) {
+		this.advanceInternetFeatureSmartwatchApp = BooleanUtils.toBooleanObject(advanceInternetFeatureSmartwatchApp);
+	}
+
+	public void transformadvanceInternetFeatureValetMode(String advanceInternetFeatureValetMode) {
+		this.advanceInternetFeatureValetMode = BooleanUtils.toBooleanObject(advanceInternetFeatureValetMode);
+	}
+
+	public void transformadvanceInternetFeatureRemoteACOnOff(String advanceInternetFeatureRemoteACOnOff) {
+		this.advanceInternetFeatureRemoteACOnOff = BooleanUtils.toBooleanObject(advanceInternetFeatureRemoteACOnOff);
+	}
+
+	public void transformadvanceInternetFeatureRemoteDoorLockUnlock(String advanceInternetFeatureRemoteDoorLockUnlock) {
+		this.advanceInternetFeatureRemoteDoorLockUnlock = BooleanUtils
+				.toBooleanObject(advanceInternetFeatureRemoteDoorLockUnlock);
+	}
+
+	public void transformadvanceInternetFeatureSOSEmergencyAssistance(
+			String advanceInternetFeatureSOSEmergencyAssistance) {
+		this.advanceInternetFeatureSOSEmergencyAssistance = BooleanUtils
+				.toBooleanObject(advanceInternetFeatureSOSEmergencyAssistance);
+	}
+
+	public void transformadvanceInternetFeatureGeofenceAlert(String advanceInternetFeatureGeofenceAlert) {
+		this.advanceInternetFeatureGeofenceAlert = BooleanUtils.toBooleanObject(advanceInternetFeatureGeofenceAlert);
+	}
+
 }

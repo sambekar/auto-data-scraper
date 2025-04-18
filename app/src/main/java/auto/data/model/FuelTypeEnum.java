@@ -1,8 +1,6 @@
 package auto.data.model;
 
-import lombok.Data;
 
-@Data
 public enum FuelTypeEnum {
 	DEISEL("DEISEL"),
     PETROL("PETROL"),

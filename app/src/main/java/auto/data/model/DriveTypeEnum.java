@@ -1,8 +1,6 @@
 package auto.data.model;
 
-import lombok.Data;
 
-@Data
 public enum DriveTypeEnum {
 	FWD("Front Wheel Drive"),
     RWD("Rear Wheel Drive"),
